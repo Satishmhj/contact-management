@@ -1,91 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DisplayContact from "../DIsplayContact/DisplayContact";
+import { useFormik } from "formik";
 
 const Form = () => {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+  const [data, setData] = useState([]);
+  
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      phoneNumber: "",
+      email: "",
+    },
+    onSubmit: (values, {resetForm}) => {
+      let getData = [...data];
+      getData.push(values)
+      setData(getData)
+      resetForm();
+    },
+  });
+  const handleDelete = (index) => {
+    let getData = [...data]
+    getData.splice(index, 1)
+    setData(getData)
 
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
-
-  const [enteredPhone, setEnteredPhone] = useState("");
-  const [enteredPhoneTouched, setEnteredPhoneTouched] = useState(false);
-
-  const enteredNameIsValid = enteredName.trim() !== "";
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
-
-  const enteredEmailIsValid = enteredEmail.includes("@");
-  const enteredEmailIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
-
-  const enteredPhoneIsValid = enteredPhone.includes("");
-  const enteredPhoneIsInvalid = !enteredPhoneIsValid && enteredPhoneTouched;
-
-  let formIsValid = false;
-
-  if (enteredNameIsValid && enteredEmailIsValid) {
-    formIsValid = true;
+  
   }
-
-  const nameInputChangeHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const phoneInputChangeHandler = (event) => {
-    setEnteredPhone(event.target.value);
-  };
-
-  const emailInputChangeHandler = (event) => {
-    setEnteredEmail(event.target.value);
-  };
-
-  const nameInputBlurHandler = (event) => {
-    setEnteredNameTouched(true);
-  };
-
-  const emailInputBlurHandler = (event) => {
-    setEnteredEmailTouched(true);
-  };
-
-  const phoneInputBlurHandler = (event) => {
-    setEnteredPhoneTouched(true);
-  };
-
-  const formSubmissionHandler = (event) => {
-    event.preventDefault();
-
-    setEnteredNameTouched(true);
-    setEnteredEmailTouched(true);
-    setEnteredPhoneTouched(true);
-
-    if (!enteredNameIsValid) {
-      return;
-    }
-
-    console.log(enteredName);
-    console.log(enteredEmail);
-    console.log(enteredPhone);
-
-    setEnteredName("");
-    setEnteredNameTouched(false);
-
-    setEnteredEmail("");
-    setEnteredEmailTouched(false);
-
-    setEnteredPhone("");
-    setEnteredPhoneTouched(false);
-  };
-
-  const nameInputClasses = nameInputIsInvalid
-    ? "form-control invalid"
-    : "form-control";
-
-  const emailInputClasses = enteredEmailIsInvalid
-    ? "form-control invalid"
-    : "form-control";
-
-  const phoneInputClasses = enteredPhoneIsInvalid
-    ? "form-control invalid"
-    : "form-control";
+  
   return (
     <>
       <div className="card w-50 mt-5 mx-auto">
@@ -96,101 +36,48 @@ const Form = () => {
           <h1>Contact Form</h1>
         </div>
         <div className="card-body">
-          <form onSubmit={formSubmissionHandler}>
-            <div className={nameInputClasses}>
-              <label htmlFor="name">Your Name</label>
+          <form onSubmit={formik.handleSubmit}>
+            <div>
+              <label htmlFor="Name" style={{padding: '5px'}}> Name</label>
               <input
-                type="text"
-                id="name"
-                onChange={nameInputChangeHandler}
-                onBlur={nameInputBlurHandler}
-                value={enteredName}
-              />
-              {nameInputIsInvalid && (
-                <p className="error-text">Name must not be empty.</p>
-              )}
-            </div>
-            <div className={emailInputClasses}>
-              <label htmlFor="email">Your E-Mail</label>
-              <input
-                type="email"
-                id="email"
-                onChange={emailInputChangeHandler}
-                onBlur={emailInputBlurHandler}
-                value={enteredEmail}
-              />
-              {enteredEmailIsInvalid && (
-                <p className="error-text">Please enter a valid email.</p>
-              )}
-            </div>
-            <div className={phoneInputClasses}>
-              <label htmlFor="phoneNumber">Your Phone no: </label>
-              <input
-                type="number"
-                id="phone"
-                onChange={phoneInputChangeHandler}
-                onBlur={phoneInputBlurHandler}
-                value={enteredPhone}
-              />
-              {enteredEmailIsInvalid && (
-                <p className="error-text">Please enter a valid email.</p>
-              )}
-            </div>
-            <div className="form-actions">
-              <button disabled={!formIsValid}>Submit</button>
-            </div>
-          </form>
-
-          <DisplayContact
-            name={enteredName}
-            email={enteredEmail}
-            phone={enteredPhone}
-          />
-          {/* <form>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                className="form-control"
-                aria-describedby="emailHelp"
-                placeholder="abc@xyz.com"
-                name="email"
-                onChange={changeHandler.email}
-                // value={() => setEmail(email)}
-                // setEmail={}
-              />
-            </div>
-            <div className="form-group">
-              <label>Name</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Name"
+                id="Name"
                 name="name"
-                onChange={changeHandler.name}
-                // value={() => setName(name)}
-                
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                className="form-group"
               />
             </div>
-            <div className="form-group">
-              <label>Phone Number</label>
+            <br/>
+            <div>
+              <label htmlFor="Email" style={{padding: '5px'}}> Email </label>
               <input
-                type="number"
-                className="form-control"
-                placeholder="9860036027"
-                name="phone"
-                onChange={changeHandler.phone}
-                // value={() => setPhone(phone)}
+                id="Email"
+                name="email"
+                type="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                className="form-group"
               />
             </div>
-            <br />
-
-            <button type="submit" className="btn btn-primary" onSubmit={formSubmissionHandler}>
-              Submit
-            </button>
-          </form> */}
+            <br/>
+            <div>
+              <label htmlFor="PhoneNumber" style={{padding: '5px'}}> Phone</label>
+              <input
+                id="PhoneNumber"
+                name="phoneNumber"
+                type="number"
+                onChange={formik.handleChange}
+                value={formik.values.phoneNumber}
+                className="form-group"
+              />
+            </div>
+            <br/>
+            <button type="submit" >Submit</button>
+          </form>
         </div>
       </div>
+      <DisplayContact data={data} handleDelete={handleDelete} setData={setData}/>
     </>
   );
 };

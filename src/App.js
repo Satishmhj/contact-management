@@ -2,7 +2,7 @@
 import './App.css';
 
 import Form from './components/ContactForm/Form';
-import DisplayContact from './components/DIsplayContact/DisplayContact';
+// import DisplayContact from './components/DIsplayContact/DisplayContact';
 import Navbar from './components/Navbar/Navbar';
 
 function App() {
